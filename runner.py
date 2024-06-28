@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from DeveloperAIHandler import DeveloperAIHandler, TEST_PASSED, TEST_FAILED, TEST_PASSED_WITHOUT_AI
 
-load_dotenv('.env')
+load_dotenv('env')
 import argparse
 import sys
 
