@@ -1,16 +1,15 @@
 import os
-from dotenv import load_dotenv
 from DeveloperAIHandler import DeveloperAIHandler, TEST_PASSED, TEST_FAILED, TEST_PASSED_WITHOUT_AI
 
-load_dotenv('env')
 import argparse
 import sys
 
 sys.path.append("../")
+from PlainTDDRunner import PlainTDDRunner
 from utils import how_many_to_skip, str2bool
 
 
-class Runner():
+class CollaborativeRunner():
 
     def __init__(self, full_context, print_context, print_message, max_number_repetitions, file, generic_prompt):
 
@@ -47,9 +46,6 @@ class Runner():
                     print("Test failed! Resending it to ChatGPT...")
 
 
-
-
-
 def params():
     parser = argparse.ArgumentParser(description='Description of your program.')
 
@@ -71,13 +67,22 @@ def params():
 if __name__ == '__main__':
     parser = params()
 
-    runner = Runner(
-        parser.full_context,
-        parser.print_context,
-        parser.print_message,
-        parser.max_number_repetitions,
-        parser.file,
-        parser.generic_prompt
-    )
+    try:
+        participant_id = int(os.getenv('PARTICIPANT_ID'))
+    except:
+        print("Missing or invalid participant ID.")
+        quit()
+
+    if participant_id % 2 == 1:
+        runner = CollaborativeRunner(
+            parser.full_context,
+            parser.print_context,
+            parser.print_message,
+            parser.max_number_repetitions,
+            parser.file,
+            parser.generic_prompt
+        )
+    else:
+        runner = PlainTDDRunner("python", "./logs", parser.file)
 
     runner.run()
